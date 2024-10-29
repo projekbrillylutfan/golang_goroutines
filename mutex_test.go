@@ -45,6 +45,7 @@ func (account *BankAccount) GetBalance() int {
 
 func TestRWMutex(t *testing.T) {
 	account := BankAccount{}
+	fmt.Println(account.GetBalance())
 
 	for i := 0; i < 100; i++ {
 		go func() {
@@ -95,18 +96,18 @@ func Transfer(user1 *UserBalance, user2 *UserBalance, amount int) {
 }
 
 func TestDeadlock(t *testing.T) {
-	user1 := UserBalance{
+	user1 := &UserBalance{
 		Name:    "Eko",
 		Balance: 1000000,
 	}
 
-	user2 := UserBalance{
+	user2 := &UserBalance{
 		Name:    "Budi",
 		Balance: 1000000,
 	}
 
-	go Transfer(&user1, &user2, 100000)
-	go Transfer(&user2, &user1, 200000)
+	go Transfer(user1, user2, 100000)
+	go Transfer(user2, user1, 200000)
 
 	time.Sleep(10 * time.Second)
 
